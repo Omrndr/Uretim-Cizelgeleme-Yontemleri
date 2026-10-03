@@ -1,0 +1,50 @@
+name: Test ve Windows .exe
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Birim testleri
+        run: python -m unittest discover -s testler -v
+      - name: Örnek senaryo (komut satırı)
+        run: python -m motor --pdf-yok
+
+  exe:
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: PyInstaller kur
+        run: python -m pip install --upgrade pip pyinstaller
+      - name: .exe üret
+        run: python paketle.py
+      - name: Yapıt olarak yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: UretimCizelgeleme-windows
+          path: dist/UretimCizelgeleme.exe
+      - name: Sürüme ekle (yalnız v* etiketlerinde)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/UretimCizelgeleme.exe

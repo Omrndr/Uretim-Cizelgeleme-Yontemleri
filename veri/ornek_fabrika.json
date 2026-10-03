@@ -1,0 +1,90 @@
+{
+  "_aciklama": "TAMAMEN HAYALİ bir örnek atölye. Ürün, süreler, kaynak adetleri ve çalışma düzeni temsilidir; gerçek bir işletmeye ait değildir.",
+  "ad": "Örnek Aydınlatma Atölyesi (hayali)",
+  "urun": "Ayarlanabilir masa lambası",
+  "varyantlar": ["Antrasit", "Krem", "Bakır", "Zeytin"],
+
+  "parca_gruplari": [
+    {
+      "kod": "CNC",
+      "ad": "CNC Torna Atölyesi",
+      "kaynak_oneki": "TORNA",
+      "makine_sayisi": 4,
+      "ayar_saat": 1.5,
+      "ayar_etiketi": "Aparat değişimi",
+      "parcalar": {
+        "T01": {"ad": "Taban diski",       "sure_sn": 46},
+        "T02": {"ad": "Taban ağırlığı",    "sure_sn": 38},
+        "T03": {"ad": "Alt kol borusu",    "sure_sn": 29},
+        "T04": {"ad": "Üst kol borusu",    "sure_sn": 27},
+        "T05": {"ad": "Mafsal gövdesi",    "sure_sn": 52},
+        "T06": {"ad": "Mafsal pimi",       "sure_sn": 11},
+        "T07": {"ad": "Yay bağlantısı",    "sure_sn": 14},
+        "T08": {"ad": "Duy yuvası",        "sure_sn": 33},
+        "T09": {"ad": "Abajur boynu",      "sure_sn": 24},
+        "T10": {"ad": "Ayar topuzu",       "sure_sn": 9},
+        "T11": {"ad": "Kablo rakoru",      "sure_sn": 17},
+        "T12": {"ad": "Sıkma vidası",      "sure_sn": 8}
+      }
+    }
+  ],
+
+  "varyant_grubu": {
+    "kod": "BOYA",
+    "ad": "Toz Boya Atölyesi",
+    "kaynak_oneki": "KABİN",
+    "makine_sayisi": 3,
+    "sure_sn": 150,
+    "ayar_saat": 3.0,
+    "ayar_etiketi": "Renk değişimi",
+    "bilesen": "Boyalı abajur",
+    "takim_adi": "Renk tabancası seti",
+    "takim_adedi": {"Antrasit": 2, "Krem": 1, "Bakır": 1, "Zeytin": 1}
+  },
+
+  "hucreler": {
+    "ad": "Elektrik Ön Montaj Atölyesi",
+    "liste": [
+      {"kod": "H1", "ad": "Taban grubu", "girdiler": ["T01", "T02", "T11"],             "sure_sn": 64, "azami_istasyon": 1},
+      {"kod": "H2", "ad": "Kol grubu",   "girdiler": ["T03", "T04", "T05", "T06", "T07"], "sure_sn": 96, "azami_istasyon": 2},
+      {"kod": "H3", "ad": "Duy grubu",   "girdiler": ["T08", "T12"],                    "sure_sn": 58, "azami_istasyon": 1}
+    ]
+  },
+
+  "hat": {
+    "ad": "Montaj ve Test Hattı",
+    "istasyonlar": [
+      {"kod": "M1", "ad": "Gövde birleştirme",  "girdiler": ["H1", "H2"],               "sure_sn": 186, "azami_istasyon": 3},
+      {"kod": "M2", "ad": "Kablolama",          "girdiler": ["H3"],                     "sure_sn": 148, "azami_istasyon": 2},
+      {"kod": "M3", "ad": "Abajur takma",       "girdiler": ["VARYANT", "T09", "T10"],  "sure_sn": 112, "azami_istasyon": 2},
+      {"kod": "M4", "ad": "Elektrik güvenlik testi", "girdiler": [],                    "sure_sn": 71,  "azami_istasyon": 1},
+      {"kod": "M5", "ad": "Ambalaj",            "girdiler": [],                         "sure_sn": 128, "azami_istasyon": 2}
+    ]
+  },
+
+  "personel_sayisi": 18,
+
+  "takvim": {
+    "vardiya_baslangic": "08:00",
+    "molalar": [["10:00", "10:15"], ["12:00", "12:45"], ["15:00", "15:15"]],
+    "gun_molalari": {},
+    "araliksiz_azami_saat": 5.0,
+    "zorunlu_mola_saat": 0.5,
+    "zorunlu_mola_mesaiye_sayilir": true,
+    "duzenler": [
+      {"kod": "D1", "ad": "Gündüz",          "brut_bitis": "17:45", "gun": 5},
+      {"kod": "D2", "ad": "Uzun gün",        "brut_bitis": "20:15", "gun": 5},
+      {"kod": "D3", "ad": "Haftada 6 gün",   "brut_bitis": "17:45", "gun": 6},
+      {"kod": "D4", "ad": "Çift vardiya",    "brut_bitis": "24:00", "gun": 5}
+    ],
+    "varsayilan_duzen": "D1"
+  },
+
+  "mevzuat": {
+    "_kaynak": "4857 sayılı İş Kanunu m.41 ve m.63 (genel, kamuya açık hükümler)",
+    "gunluk_azami_saat": 11.0,
+    "haftalik_normal_saat": 45.0,
+    "haftalik_azami_saat": 60.0,
+    "yillik_fazla_calisma_tavani": 270.0
+  }
+}

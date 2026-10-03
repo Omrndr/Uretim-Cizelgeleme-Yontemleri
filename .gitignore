@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# PyInstaller (python paketle.py)
+build/
+dist/
+*.spec
+
+# Üretilen çıktılar ve yerel veriler
+Ciktilar/
+plan_ciktilari/
+*.db
+senaryo_*.json
+
+# Editör / işletim sistemi
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

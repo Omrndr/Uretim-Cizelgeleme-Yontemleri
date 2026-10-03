@@ -1,0 +1,12 @@
+{
+  "_aciklama": "Hayali siparişler — örnek fabrika ile birlikte kullanılır.",
+  "baslangic": "2026-11-02",
+  "siparisler": [
+    {"kod": "S-101", "miktarlar": {"Antrasit": 1500, "Krem": 700}, "termin": "2026-11-27"},
+    {"kod": "S-102", "miktarlar": {"Bakır": 800, "Zeytin": 400}, "termin": "2026-12-18"},
+    {"kod": "S-103", "miktarlar": {"Antrasit": 1200, "Krem": 300, "Zeytin": 600}, "termin": "2027-01-22"}
+  ],
+  "ek_mesailer": [],
+  "personel": [],
+  "ayarlar": {}
+}
