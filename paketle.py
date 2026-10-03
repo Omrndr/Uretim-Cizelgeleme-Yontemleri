@@ -24,6 +24,12 @@ AD = "UretimCizelgeleme"
 
 
 def main() -> int:
+    # Windows konsolu (cp1252) Türkçe karakterleri basamaz; çıktıyı UTF-8'e çevir
+    for akis in (sys.stdout, sys.stderr):
+        try:
+            akis.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
     try:
         import PyInstaller  # noqa: F401
     except ImportError:
