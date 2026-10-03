@@ -1,7 +1,7 @@
 # Algoritmik Yapı ve Mimari
 
 Bu belge kodun nasıl örgütlendiğini, verinin hangi sırayla aktığını ve her
-algoritmanın sözde kodunu anlatır. Formüllerin gerekçeleri
+algoritmanın pseudocode'unu anlatır. Formüllerin gerekçeleri
 [MATEMATIK.md](MATEMATIK.md) dosyasındadır.
 
 ## 1. Katmanlar
@@ -50,7 +50,7 @@ Böylece ekranda görülen ile kâğıda basılan birebir aynıdır. Motor genel
 yapıdadır: başka bir fabrika, yalnızca yeni bir JSON tanımıyla modellenebilir
 (bkz. [KULLANIM.md § 5](KULLANIM.md#5-kendi-fabrikanızı-tanımlamak)).
 
-## 2. Uçtan uca akış
+## 2. End-to-end akış
 
 ```mermaid
 sequenceDiagram
@@ -63,14 +63,14 @@ sequenceDiagram
     participant A as akis
     participant R as personel
     UI->>C: siparişler, ek mesai, kadro, ayarlar
-    C->>C: üretim sırası (EDD + hedef kovalama)
-    C->>T: kesin min-maks tahsis (aday çevrim taraması)
+    C->>C: üretim sırası (EDD + goal chasing)
+    C->>T: kesin min-maks tahsis (candidate cycle sweep)
     T-->>C: birim → personel, P‖Cmax dengelemeleri
     C->>K: kaynak takvimleri (düzen + talimatlar)
     C->>V: varyant planı (bir kez)
     loop her (K, r) adayı
-        C->>P: parti planı (yılan sıra, rampa)
-        C->>A: ileri özyineleme + liste çizelgeleme
+        C->>P: parti planı (snake sequencing, rampa)
+        C->>A: forward recursion + list scheduling
         A-->>C: bitişler → gecikmeler → leksikografik anahtar
     end
     C->>R: meşgul saatler → yasal sınırlı atama
@@ -78,7 +78,7 @@ sequenceDiagram
     C-->>UI: Plan (+ uyarılar)
 ```
 
-## 3. Sözde kodlar
+## 3. Pseudocode'lar
 
 ### 3.1 Planlayıcı
 
@@ -119,7 +119,7 @@ en_iyi_dagilim(birimler, N):
     return w
 ```
 
-### 3.3 P‖Cmax: LPT + yerel arama
+### 3.3 P‖Cmax: LPT + local search
 
 ```text
 dengele(t, m):
@@ -140,7 +140,7 @@ parti_planı(grup, K, r, S):
     for her makine k, parçaları P_k (uzun önce):
         t ← ilk_müsait(0) ; önceki ← ∅
         for j, q_j:
-            sıra ← P_k  ya da (yılan sırada, j tekse) ters(P_k)
+            sıra ← P_k  ya da (snake sequencing'de, j tekse) ters(P_k)
             for p in sıra:
                 if p ≠ önceki: t ← ilerlet(t, S) ; ayar += 1
                 baş ← ilk_müsait(t) ; t ← ilerlet(baş, q_j · t_p)
@@ -148,7 +148,7 @@ parti_planı(grup, K, r, S):
                 önceki ← p
 ```
 
-### 3.5 Varyant planı (olay güdümlü)
+### 3.5 Varyant planı (event-driven)
 
 ```text
 varyant_planı(sıra, m, T, S, τ):
@@ -180,9 +180,9 @@ varyant_planı(sıra, m, T, S, τ):
 for i = 1..N:
     for j in (hücreler, hat istasyonları):
         R ← max( önceki istasyonun F(i), parça P_p(i), hücre F_h(i), varyant V_v(κ_i) )
-        s ← argmin_s ilerle_s( max(R, A_s), τ_j )    # liste çizelgeleme
+        s ← argmin_s ilerle_s( max(R, A_s), τ_j )    # list scheduling
         S_j(i) ← ilk_müsait_s(max(R, A_s)) ;  F_j(i) ← ilerle_s(S_j(i), τ_j) ;  A_s ← F_j(i)
-        kısıt[j][neden] += 1 ;  aç kalma += g(R) − g(A_s)   (istasyon girdi bekliyorsa)
+        kısıt[j][neden] += 1 ;  starvation += g(R) − g(A_s)   (istasyon girdi bekliyorsa)
 ```
 
 ### 3.8 Personel ataması
@@ -204,9 +204,9 @@ for g in günler (artan):
 | Adım | Karmaşıklık | Örnek (5 500 adet) |
 |---|---|---|
 | Tahsis (aday taraması) | $O(\lvert\mathcal{A}\rvert \cdot \lvert U\rvert \cdot \bar w)$ | < 10 ms |
-| P‖Cmax (LPT + yerel arama) | $O(n \log n)$ + $O(\text{adım} \cdot m \cdot n^2)$ | < 5 ms |
+| P‖Cmax (LPT + local search) | $O(n \log n)$ + $O(\text{adım} \cdot m \cdot n^2)$ | < 5 ms |
 | Takvim kurulumu | $O(\lvert\text{kaynak}\rvert \cdot \text{ufuk})$, gün bloğu önbellekli | ~0,2 s |
-| Varyant benzetimi | $O(N \log m)$ olay | ~0,1 s |
+| Varyant simülasyonu | $O(N \log m)$ olay | ~0,1 s |
 | Parti + akış (aday başına) | $O(N \cdot \sum_j c_j \cdot \log \lvert W\rvert)$ | ~0,2 s |
 | Personel ataması | $O(\text{gün} \cdot \text{vardiya} \cdot \lvert E\rvert)$ | ~0,1 s |
 | **Toplam (7 aday)** | | **≈ 2 s** |
@@ -221,7 +221,7 @@ flowchart TB
     PA --> IE
     IE -->|"vardiya dilimleme · adet ve sipariş atfı"| SAT["satır: zaman · kaynak · personel · iş emri"]
     SAT --> G[günlük A4] & H[haftalık A3] & PK[personel kartı] & CSV[CSV]
-    PS --> GB[genel bakış: termin + hafta×atölye ısı haritası]
+    PS --> GB[overview: termin + hafta×atölye heatmap]
     PS --> XL[XLSX: 15 sayfa]
     G & H & GB & PK --> HTML --> PDF["PDF (headless Edge/Chrome)"]
 ```
@@ -240,11 +240,11 @@ flowchart TB
 
 | Test | Doğrulama |
 |---|---|
-| Tahsis | 10–22 kişilik bütün kadrolarda ve 60 rastgele örnekte **kaba kuvvet tam sayımıyla birebir aynı** (çevrim, personel) |
-| Dengeleme | Kaba kuvvet optimumu ≥ alt sınır; LPT ≤ Graham sınırı; yerel arama kötüleştirmez |
+| Tahsis | 10–22 kişilik bütün kadrolarda ve 60 rastgele örnekte **brute force tam sayımıyla birebir aynı** (çevrim, personel) |
+| Dengeleme | Brute force optimumu ≥ alt sınır; LPT ≤ Graham sınırı; local search kötüleştirmez |
 | Takvim | $g(g^{-1}(w)) = w$; zorunlu mola; sabit molalar çalışılmaz |
-| Parti / sıra | Toplam korunur; rampa monoton; hedef kovalamada oran sapması < 1 |
+| Parti / sıra | Toplam korunur; rampa monoton; goal chasing'de oran sapması < 1 |
 | Akış | Öncelik ilişkileri; istasyonda çakışma yok |
 | Varyant | Üretilen = talep; hiçbir anda takım sınırı aşılmaz |
 | Personel | Günlük/haftalık/yıllık sınırlar; kişi başına günde tek vardiya; saat korunumu |
-| Uçtan uca | Termine uygunluk; iş emri adetleri = ürün × parça sayısı; paket, XLSX, senaryo ve defter gidiş-dönüşü |
+| End-to-end | Termine uygunluk; iş emri adetleri = ürün × parça sayısı; paket, XLSX, senaryo ve defter gidiş-dönüşü |

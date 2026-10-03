@@ -10,7 +10,7 @@ Her kaynak-gününe bir personel atanır. Personel e için:
     fazla çalışma  FM_{e,w} = max(0, Σ_{g∈w} h_{e,g} − 45)
 
 Tam model bir tam sayılı programdır (atama + kaynak kısıtları); gün gün
-ilerleyen açgözlü bir sezgiselle çözülür:
+ilerleyen greedy bir heuristic'le çözülür:
 
   1) h_{k,g} > H_gün ise gün ⌈h / H_gün⌉ eşit vardiyaya bölünür; her vardiya AYRI
      personel gerektirir (bir personel günde tek vardiya).

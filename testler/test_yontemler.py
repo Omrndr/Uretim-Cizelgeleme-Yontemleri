@@ -26,7 +26,7 @@ FABRIKA = fabrika_yukle()
 
 
 def kesin_cmax(sureler, m):
-    """Kaba kuvvet P||Cmax optimumu (küçük örnekler için)."""
+    """Brute force P||Cmax optimumu (küçük örnekler için)."""
     t = list(sureler.values())
     en = math.inf
     for atama in itertools.product(range(m), repeat=len(t)):
@@ -50,7 +50,7 @@ class DengelemeTesti(unittest.TestCase):
             self.assertGreaterEqual(d.cmax + 1e-9, opt)
             self.assertGreaterEqual(opt + 1e-9, alt_sinir(sureler, m))
             self.assertLessEqual(d.lpt_cmax, (4 / 3 - 1 / (3 * m)) * opt + 1e-9)
-            self.assertLessEqual(d.cmax, d.lpt_cmax + 1e-9)      # yerel arama kötüleştirmez
+            self.assertLessEqual(d.cmax, d.lpt_cmax + 1e-9)      # local search kötüleştirmez
             self.assertEqual(sorted(p for g in d.gruplar for p in g), sorted(sureler))
 
     def test_yerel_arama_cogunlukla_optimum(self):

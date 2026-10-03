@@ -126,7 +126,7 @@ def paket_olustur(plan: Plan, kok: Path, pdf: bool = True,
         gorevler.append((yol, icerik))
 
     html_yaz(hedef / "00_Genel_Bakis.html",
-             cz.html_belgesi([gb.genel_bakis(plan)], "Genel bakış", "A4"))
+             cz.html_belgesi([gb.genel_bakis(plan)], "Overview", "A4"))
     (hedef / "01_Plan_Raporu.txt").write_text(an.duz_metin_rapor(plan), encoding="utf-8")
     tb.plan_calisma_kitabi(plan, hedef / "02_Plan_Tablolari.xlsx", emirler)
     tb.csv_yaz(hedef / "03_Is_Emirleri.csv", tablo(plan, emirler), BASLIKLAR)
@@ -197,7 +197,7 @@ Hafta sayısı   : {hafta}
 Belge          : {ozet["belge"]} ({ozet["pdf"]} PDF, {ozet["html"]} HTML)
 
 İÇİNDEKİLER
-  00_Genel_Bakis      termin çizelgesi ve hafta × atölye kullanım ısı haritası
+  00_Genel_Bakis      termin çizelgesi ve hafta × atölye kullanım heatmap
   01_Plan_Raporu.txt  kapasite, dengeleme, parti araması, uyarı panoları
   02_Plan_Tablolari   bütün tablolar (Excel / LibreOffice ile açılır)
   03_Is_Emirleri.csv  zaman · kaynak · personel · iş emri satırları

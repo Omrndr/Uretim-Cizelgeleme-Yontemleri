@@ -4,7 +4,7 @@
 
 ### Windows — hazır .exe
 
-[Releases](https://github.com/Omrndr/Uretim-Cizelgeme-Yontemleri/releases) sayfasından `UretimCizelgeleme.exe` dosyasını indirip
+[Releases](https://github.com/Omrndr/Uretim-Cizelgeleme-Yontemleri/releases) sayfasından `UretimCizelgeleme.exe` dosyasını indirip
 çift tıklayın. Kurulum, yönetici izni ya da Python gerekmez. Dosya, deponun
 GitHub Actions iş akışı tarafından her sürümde otomatik olarak derlenir
 (`.github/workflows/derle.yml`).
@@ -41,14 +41,14 @@ python paketle.py            # → dist/UretimCizelgeleme.exe (~15 MB)
 | Sekme | İçerik |
 |---|---|
 | **Girdiler** | Plan başlangıcı, varsayılan çalışma düzeni, ayar süreleri; sipariş, ek mesai ve personel tabloları; hesaplamadan önce girdi denetimi |
-| **Uyarılar** | Pano A (yasal durum), Pano B (hat yeterliliği ve günlük açık), genel uyarılar |
+| **Uyarılar** | Pano A (yasal durum), Pano B (capacity check ve günlük açık), genel uyarılar |
 | **Özet** | Temel göstergeler, sipariş durumu, personel tahsisi, parti araması tablosu |
 | **Günlük şema** | Atölye × gün, saat ölçekli (A4) |
 | **Haftalık şema** | Atölye × hafta (A3) |
-| **Genel bakış** | Termin çizelgesi ve hafta × atölye kullanım ısı haritası |
+| **Overview** | Termin çizelgesi ve hafta × atölye kullanım heatmap |
 | **İş emirleri** | Zaman · kaynak · personel · iş emri satırları; atölye, personel ve siparişe göre süzme; CSV |
 | **Personel ve defter** | Bu plandaki personel yükü; yıllık fazla çalışma defteri (işle, sıfırla, ad değişikliğinde bakiye taşı) |
-| **Tablolar** | Kaynak kullanımı, makine dengeleme, günlük çıkış, ayar listesi, kısıt analizi ve diğerleri; bütün tablolar XLSX |
+| **Tablolar** | Kaynak kullanımı, makine dengeleme, günlük çıkış, ayar listesi, constraint analizi ve diğerleri; bütün tablolar XLSX |
 | **Çıktı** | Yazıcıya hazır paket (PDF/HTML + XLSX + CSV) |
 
 **Döngü:** girdileri düzenle → **HESAPLA** (F5) → uyarıları oku → gerekirse ek mesai
@@ -71,7 +71,7 @@ Bir kaynak-günü 11 saati aşarsa gün iki vardiyaya bölünür ve ikinci vardi
 **ayrı bir personel** atanır. Uygun personel kalmazsa vardiya "atanamayan" olarak
 raporlanır.
 
-**Öneri düğmesi:** Ek mesai sekmesindeki *darboğaz takibi* hangi kaynakların
+**Öneri düğmesi:** Ek mesai sekmesindeki *bottleneck walk* hangi kaynakların
 uzatılması gerektiğini önerir ve satırları tabloya ekler. Bu yalnızca bir öneridir;
 satırları dilediğiniz gibi değiştirebilirsiniz.
 
@@ -108,7 +108,7 @@ satırları dilediğiniz gibi değiştirebilirsiniz.
 ```
 Ciktilar/Plan_2026-11-02 (olusturma …)/
   BENIOKU.txt
-  00_Genel_Bakis.pdf          termin çizelgesi + ısı haritası
+  00_Genel_Bakis.pdf          termin çizelgesi + heatmap
   01_Plan_Raporu.txt          kapasite, dengeleme, parti araması, panolar
   02_Plan_Tablolari.xlsx      15 sayfa
   03_Is_Emirleri.csv

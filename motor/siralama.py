@@ -3,10 +3,10 @@
 
 1) Siparişler arası: EN ERKEN TERMİN ÖNCE (EDD). Tek makinede en büyük gecikmeyi
    (L_max) en aza indiren kuraldır (Jackson, 1955); akış hattında da güçlü bir
-   sezgiseldir.
+   heuristic'tir.
 
 2) Sipariş içi: varyantlar blok blok değil, oranları korunarak karıştırılır.
-   "Hedef kovalama" (goal chasing, Toyota / Monden): k. adımda, ideal birikimli
+   "Goal chasing" (goal chasing, Toyota / Monden): k. adımda, ideal birikimli
    üretimin gerisinde en çok kalan varyant seçilir:
 
         v_k = argmax_v ( d_v · k / D  −  x_v(k−1) )

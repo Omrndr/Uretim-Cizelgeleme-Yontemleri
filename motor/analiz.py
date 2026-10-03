@@ -211,7 +211,7 @@ def kisit_tablosu(plan: Plan) -> Tablo:
         for neden, k in sorted(sayac.items(), key=lambda x: -x[1]):
             out.append({"Operasyon": f"{op.kod} {op.ad}", "Bağlayıcı neden": neden,
                         "Ürün": k, "Pay (%)": round(100 * k / n, 1),
-                        "Aç kalma (sa)": round(aclik.get(neden, 0.0) / SAAT, 1)})
+                        "Starvation (sa)": round(aclik.get(neden, 0.0) / SAAT, 1)})
     return out
 
 

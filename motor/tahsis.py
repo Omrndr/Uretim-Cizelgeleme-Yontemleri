@@ -15,7 +15,7 @@ Sistem çevrim süresi (takt kapasitesi) en yavaş birimdir:
 PROBLEM (min-max kaynak tahsisi):
     min_w  C(w)   öyle ki   Σ_u w_u ≤ N ,   1 ≤ w_u ≤ ü_u ,  w_u ∈ ℤ
 
-KESİN ÇÖZÜM — aday çevrim taraması:
+KESİN ÇÖZÜM — candidate cycle sweep:
     Optimal C* mutlaka {f_u(k)} kümesinin bir elemanıdır. Aday değerler küçükten
     büyüğe taranır; her aday C için her birimin ihtiyacı
         n_u(C) = min{ k : f_u(k) ≤ C }
@@ -133,7 +133,7 @@ def tahsis_birimleri(fabrika: Fabrika, talep_varyantlari: Sequence[str]
 
 def min_max_tahsis(birimler: Sequence[TahsisBirimi], butce: int
                    ) -> Optional[Tuple[Dict[str, int], float]]:
-    """Aday çevrim taraması. Dönüş: ({birim: personel}, C*) ya da None."""
+    """Candidate cycle sweep. Dönüş: ({birim: personel}, C*) ya da None."""
     if butce < len(birimler):
         return None
     adaylar = sorted({round(f, 9) for b in birimler for f in b.cevrimler})

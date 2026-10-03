@@ -4,7 +4,7 @@ Varyant bileşeni planı — takım kısıtlı paralel makineler.
 Varyant v için en fazla T_v makine aynı anda çalışabilir (takım adedi). Makine
 sayısı m, talep d_v.
 
-1) BAŞLANGIÇ PAYLARI — akışkan gevşetme:
+1) BAŞLANGIÇ PAYLARI — fluid relaxation:
    Makineler sürekli bölünebilseydi her varyanta talebi oranında pay düşerdi:
         s_v = m · d_v / Σ d
    Tam sayıya indirgeme: n_v = clamp(⌊s_v⌋, 1, T_v). Toplam m'yi aşarsa önce
@@ -19,10 +19,10 @@ sayısı m, talep d_v.
      * Kendi varyantının talebi bittiyse -> takımı boşta olan varyantlar içinde
        bir sonraki adedine hatta EN ERKEN ihtiyaç duyulana geçer (ihtiyaç anı
        önceliği: k. adedin üretim sırasındaki konumu).
-     * AMORTİSMAN KESMESİ: Hiç makinesi olmayan ("aç") bir varyant varsa ve bu
-       makine son ayardan beri en az q_min adet ürettiyse VE hat aç varyantı
+     * AMORTİSMAN KESMESİ: Hiç makinesi olmayan ("starving") bir varyant varsa ve bu
+       makine son ayardan beri en az q_min adet ürettiyse VE hat starving varyantı
        mevcut varyanttan daha önce isteyecekse (ihtiyaç konumu daha küçükse) seri
-       kesilir ve aç varyanta geçilir. Böylece hiçbir varyant hat sonuna kadar
+       kesilir ve starving varyanta geçilir. Böylece hiçbir varyant hat sonuna kadar
        bekletilmez, ama makine de iki renk arasında gereksiz yere gidip gelmez.
 
    q_min, ayarın makine zamanındaki payını α ile sınırlar. q adetlik bir seride

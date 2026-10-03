@@ -1,4 +1,4 @@
-"""Uçtan uca testler: örnek senaryo, plan tutarlılığı, iş emirleri, çıktılar, defter."""
+"""End-to-end testler: örnek senaryo, plan tutarlılığı, iş emirleri, çıktılar, defter."""
 import sys
 import tempfile
 import unittest

@@ -1,5 +1,5 @@
 """
-Uçtan uca planlayıcı.
+End-to-end planlayıcı.
 
     siparişler ─► üretim sırası (EDD + heijunka)
                ─► personel tahsisi (kesin min-maks)  ─► kaynak listesi

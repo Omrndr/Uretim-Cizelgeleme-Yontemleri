@@ -151,7 +151,7 @@ def plan_calisma_kitabi(plan, yol: Union[str, Path], emirler=None) -> Path:
         ("Günlük çıkış", an.gunluk_cikis(plan)),
         ("Günlük personel", an.gunluk_personel(plan)),
         ("Ayarlar", an.ayar_tablosu(plan)),
-        ("Kısıt analizi", an.kisit_tablosu(plan)),
+        ("Constraint analizi", an.kisit_tablosu(plan)),
         ("Ek mesai", an.ek_mesai_ozeti(plan)),
         ("Personel özeti", an.personel_ozeti(plan)),
         ("Görevlendirmeler", an.gorev_tablosu(plan)),

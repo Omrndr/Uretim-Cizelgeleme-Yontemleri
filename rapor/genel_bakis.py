@@ -1,13 +1,13 @@
 """
-Genel bakış — planlamacı için iki panel (sahaya inmez).
+Overview — planlamacı için iki panel (sahaya inmez).
 
     PANEL 1 · TERMİN ÇİZELGESİ   satır = sipariş; üretim aralığı, termin işareti,
                                  erken/geç gün sayısı → "yetişiyor muyum?"
-    PANEL 2 · HAFTA × ATÖLYE     hücre = o hafta atölyenin kullanım oranı (ısı haritası),
+    PANEL 2 · HAFTA × ATÖLYE     hücre = o hafta atölyenin utilization (heatmap),
                                  alt satırlar: çalışan personel ve ayar sayısı
                                  → "nerede sıkışıyorum?"
 
-Kullanım oranı çalışma saniyesiyle hesaplanır: haftalık meşgul çalışma süresi /
+Utilization çalışma saniyesiyle hesaplanır: haftalık meşgul çalışma süresi /
 haftalık açık çalışma süresi (atölyedeki bütün kaynaklar toplamı).
 """
 from __future__ import annotations
@@ -69,10 +69,10 @@ def hafta_atolye_kullanimi(plan: Plan) -> Tuple[List[date], Dict[Tuple[str, date
 
 def genel_bakis(plan: Plan) -> cz.Sahne:
     W, H = cz.A4_YATAY
-    s = cz.Sahne(W, H, baslik="Genel bakış")
+    s = cz.Sahne(W, H, baslik="Overview")
     tk = plan.takvim
     s.dik(0, 0, W, 6, dolgu=cz.ATOLYE_RENKLERI[0])
-    s.yazi(28, 40, "Genel Bakış — Termin ve Doluluk", 20, kalin=True)
+    s.yazi(28, 40, "Overview — Termin ve Doluluk", 20, kalin=True)
     durum = "bütün siparişler zamanında" if plan.termine_uygun else \
         f"en büyük gecikme {plan.en_buyuk_gecikme:.1f} gün"
     s.yazi(28, 62, f"{plan.urun_sayisi} adet · bitiş {plan.bitis_tarihi:%d.%m.%Y} · {durum}",
@@ -128,7 +128,7 @@ def genel_bakis(plan: Plan) -> cz.Sahne:
     # ---------------------------------------------------------------- panel 2
     haftalar_, oran, kisi, ayar = hafta_atolye_kullanimi(plan)
     ust2 = y0 + 26 * len(siparisler) + 50
-    s.yazi(28, ust2, "2 · Hafta × atölye kullanım oranı", 13, kalin=True)
+    s.yazi(28, ust2, "2 · Hafta × atölye utilization", 13, kalin=True)
     atolyeler = plan.fabrika.atolyeler
     hucre_w = min(70.0, (sag - sol) / max(1, len(haftalar_)))
     hucre_h = 26.0

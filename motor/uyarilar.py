@@ -4,7 +4,7 @@ Uyarı panoları — planı değiştirmeden ölçer: hangi sınır zorlanıyor, 
 PANO A · YASAL DURUM   — "Sınırları aşıyor muyum?"
     günlük, haftalık, yıllık fazla çalışma ve atanamayan vardiyalar.
 
-PANO B · HAT YETERLİLİĞİ — "Hangi hat yetmiyor, günde kaç saat eksik?"
+PANO B · CAPACITY CHECK — "Hangi hat yetmiyor, günde kaç saat eksik?"
     Her kaynak grubu için ANALİTİK günlük ihtiyaç (yeniden planlama yapılmaz):
 
         h_gerekli = N · τ_g / ( c_g · 3600 · D )        [saat / gün / kaynak]
@@ -166,7 +166,7 @@ def geciken_siparisler(plan: Plan) -> List[GecikmeAnalizi]:
 def panolar_metin(plan: Plan) -> str:
     L = ["PANO A · YASAL DURUM"]
     L += [f"   {x}" for x in mevzuat_panosu(plan)]
-    L += ["", "PANO B · HAT YETERLİLİĞİ"]
+    L += ["", "PANO B · CAPACITY CHECK"]
     gecikenler = geciken_siparisler(plan)
     if not gecikenler:
         en_dolu = sorted(grup_aciklari(plan), key=lambda h: -h.kullanim)[:3]

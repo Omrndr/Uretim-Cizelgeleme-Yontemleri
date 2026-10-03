@@ -20,13 +20,13 @@ atölyeden alınmıştır.
 6. [Parti (kampanya) planı](#6-parti-kampanya-planı)
 7. [Takım kısıtlı varyant planı](#7-takım-kısıtlı-varyant-planı)
 8. [Üretim sırası — EDD ve heijunka](#8-üretim-sırası--edd-ve-heijunka)
-9. [Akış hesabı — ileri özyineleme](#9-akış-hesabı--ileri-özyineleme)
+9. [Akış hesabı — forward recursion](#9-akış-hesabı--forward-recursion)
 10. [Amaç hiyerarşisi ve arama](#10-amaç-hiyerarşisi-ve-arama)
 11. [Personel çizelgeleme — yasal sınırlar](#11-personel-çizelgeleme--yasal-sınırlar)
-12. [Ek mesai önerisi — darboğaz takibi](#12-ek-mesai-önerisi--darboğaz-takibi)
-13. [Hat yeterliliği — analitik açık](#13-hat-yeterliliği--analitik-açık)
+12. [Ek mesai önerisi — bottleneck walk](#12-ek-mesai-önerisi--bottleneck-walk)
+13. [Capacity check — analitik açık](#13-capacity-check--analitik-açık)
 14. [Performans ölçütleri](#14-performans-ölçütleri)
-15. [Kaynakça](#15-kaynakça)
+15. [Referanslar](#15-referanslar)
 
 ---
 
@@ -117,7 +117,7 @@ $$
 \frac{C_{LPT}}{C^*} \le \frac{4}{3} - \frac{1}{3m}.
 $$
 
-**Yerel arama (en dik iniş).** En yüklü makine $a$ için iki hamle türü denenir:
+**Local search (steepest descent).** En yüklü makine $a$ için iki hamle türü denenir:
 
 - *taşıma:* $p \in P_a$ başka bir makine $b$'ye geçer → yeni çift maksimumu $\max(L_a - t_p,\ L_b + t_p)$,
 - *takas:* $p \in P_a$ ile $q \in P_b$ yer değiştirir ($t_p > t_q$) → yeni çift maksimumu $\max(L_a - \delta,\ L_b + \delta)$, burada $\delta = t_p - t_q$.
@@ -130,7 +130,7 @@ büyük olandan küçük olana geçer ve iki yükün ikisi de eski büyük değe
 kalır. Bu durumda $\sum_k L_k^2$ kesin olarak azalır. Atama sayısı sonlu olduğundan
 arama sonlu adımda durur.
 
-Testlerde 30 rastgele örnekte (7 parça, 3 makine) kaba kuvvet optimumuyla
+Testlerde 30 rastgele örnekte (7 parça, 3 makine) brute force optimumuyla
 karşılaştırılır. Sonuç en az 24 örnekte optimumdur, bütün örneklerde de Graham
 sınırının içindedir.
 
@@ -159,7 +159,7 @@ Birimlerin yanıt fonksiyonları:
 
 *Kaynak: min-maks (darboğaz) kaynak tahsisi için bkz. Ibaraki & Katoh (1988).*
 
-**Kesin çözüm: aday çevrim taraması.** Optimal değer $C^*$ mutlaka
+**Kesin çözüm: candidate cycle sweep.** Optimal değer $C^*$ mutlaka
 $\mathcal{A} = \{ f_u(k) : u \in U,\ 1 \le k \le \bar w_u \}$ kümesinin bir
 elemanıdır. Adaylar küçükten büyüğe taranır. Her aday $c$ için birimlerin asgari
 ihtiyacı hesaplanır:
@@ -178,7 +178,7 @@ ve aynı $c$'ye ulaşan tahsisler içinde en az personeli kullanır. ∎
 
 Tam sayım $\prod_u \bar w_u$ kombinasyon dener. Tarama ise
 $O(|\mathcal{A}| \cdot |U| \cdot \max \bar w)$ adımda biter. Ayrıca $f_u$'nun
-monoton olması gerekmez; LPT sezgiseli $m$ arttıkça her zaman iyileşmeyebilir ve
+monoton olması gerekmez; LPT heuristic'i $m$ arttıkça her zaman iyileşmeyebilir ve
 yöntem bu durumda da doğru çalışır.
 
 **Artık personel.** Optimum çoğu zaman bütün kadroyu kullanmaz. Artan personel
@@ -189,7 +189,7 @@ dışındaki birimlerde emniyet payı oluşur.
 Örnek atölyede 18 kişiyle $C^* = 96$ sn/adet (darboğaz H2), 20 kişiyle 78 sn/adet
 (yapısal alt sınır) elde edilir.
 
-> Kod: `motor/tahsis.py` → `min_max_tahsis`, `en_iyi_dagilim` · Test: kaba kuvvetle eşitlik (`TahsisTesti`)
+> Kod: `motor/tahsis.py` → `min_max_tahsis`, `en_iyi_dagilim` · Test: brute force ile eşitlik (`TahsisTesti`)
 
 ---
 
@@ -200,7 +200,7 @@ cinsindendir. Her kaynağın kendine ait bir takvimi vardır, çünkü ek mesai 
 kaynağa verilebilir. Bir kaynağın takvimi ayrık çalışma aralıklarının birleşimidir:
 
 $$
-W_k = \bigcup_{j} [a_j, b_j), \qquad K_j = \sum_{l<j} (b_l - a_l).
+W_k = \bigcup_{j} [a_j, b_j), \qquad K_j = \sum_{l=1}^{j-1} (b_l - a_l).
 $$
 
 **Birikimli çalışma** ve **tersi** şöyle tanımlanır ($K_j < w \le K_{j+1}$ için):
@@ -264,18 +264,18 @@ $$
 q_j^{ideal} = N \cdot \frac{r^{\,j}}{\sum_{l=0}^{K-1} r^{\,l}}, \qquad j = 0..K-1, \qquad r \ge 1.
 $$
 
-Tam sayıya yuvarlamada **en büyük kalan (Hamilton) yöntemi** kullanılır:
+Tam sayıya yuvarlamada **largest remainder (Hamilton) yöntemi** kullanılır:
 $q_j = \max(1, \lfloor q_j^{ideal} \rfloor)$ alınır, kalan adetler kesirli kısmı en
 büyük partilerden başlanarak dağıtılır. Toplam korunur ve
 $|q_j - q_j^{ideal}| < 1$ olur.
 
-**Yılan (serpantin) sıra.** Ardışık partilerde parça sırası ters çevrilir:
+**Snake (serpentine) sequencing.** Ardışık partilerde parça sırası ters çevrilir:
 $(A,B,C \mid C,B,A \mid A,B,C \dots)$. Bir partinin son parçası bir sonrakinin ilk
 parçası olduğu için parti geçişinde ayar gerekmez. Böylece makine başına
 $K - 1$ ayar kazanılır. Bu, sıradan bağımsız ayarlarda maliyetsiz bir iyileştirmedir.
 
 **Sipariş atfı.** $j$. parti, üretim sırasındaki
-$\left[\sum_{l<j} q_l,\ \sum_{l \le j} q_l\right)$ aralığındaki ürünlere birer
+$\left[\sum_{l=0}^{j-1} q_l,\ \sum_{l=0}^{j} q_l\right)$ aralığındaki ürünlere birer
 parça üretir. İş emirlerindeki sipariş sütunu buradan türetilir.
 
 > Kod: `motor/parti.py` → `parti_buyuklukleri`, `parca_partileri`, `ParcaZamanlari`
@@ -289,31 +289,31 @@ $v$ için aynı anda en fazla $T_v$ makine çalışabilir; bu sınırı takım a
 
 *Kaynak (D'Hondt/Jefferson bölenleri): Balinski & Young (1982).*
 
-**1) Başlangıç payları — akışkan gevşetme.** Makineler sürekli bölünebilseydi her
+**1) Başlangıç payları — fluid relaxation.** Makineler sürekli bölünebilseydi her
 varyanta talebi oranında pay düşerdi:
 
 $$
-s_v = m \cdot \frac{d_v}{\sum_l d_l}, \qquad n_v = \operatorname{clamp}\big(\lfloor s_v \rfloor,\ 1,\ T_v\big).
+s_v = m \cdot \frac{d_v}{\sum_l d_l}, \qquad n_v = \mathrm{clamp}\big(\lfloor s_v \rfloor,\ 1,\ T_v\big).
 $$
 
 - $\sum n_v > m$ ise, sıraya **en geç ihtiyaç duyulan** varyanttan eksiltilir.
 - $\sum n_v < m$ ise kalan makineler, takım sınırı içinde, $d_v / (n_v + 1)$ oranı en büyük varyanta verilir (**D'Hondt / Jefferson** bölen yöntemi).
 
-**2) Olay güdümlü benzetim.** Makineler, müsait olma anına göre bir öncelik
+**2) Event-driven simülasyon.** Makineler, müsait olma anına göre bir öncelik
 kuyruğunda tutulur. Her olayda makine ya bir adet daha üretir ya da varyant değiştirir:
 
 - *Talep bitti:* takımı boşta olan varyantlar içinde, bir sonraki adedi hatta
   **en erken** gereken varyanta geçilir. İhtiyaç anı, o adedin üretim sırasındaki
   konumudur.
-- *Amortisman kesmesi:* Hiç makinesi olmayan ("aç") bir varyant varsa ve iki koşul
-  birlikte sağlanıyorsa seri kesilir ve aç varyanta geçilir:
+- *Amortisman kesmesi:* Hiç makinesi olmayan ("starving") bir varyant varsa ve iki koşul
+  birlikte sağlanıyorsa seri kesilir ve starving varyanta geçilir:
 
 $$
 \text{seri} \ \ge\ q_{min}
 \qquad \text{ve} \qquad \text{ihtiyaç}(v_{aç}) < \text{ihtiyaç}(v_{mevcut}).
 $$
 
-İkinci koşul, hattın aç varyantı mevcut varyanttan önce isteyeceğini söyler; varyant
+İkinci koşul, hattın starving varyantı mevcut varyanttan önce isteyeceğini söyler; varyant
 sayısı makine sayısından fazla olduğunda makinenin iki varyant arasında gereksiz yere
 gidip gelmesini önler.
 
@@ -347,9 +347,9 @@ $j$. ürünü besler.
 
 **Siparişler arası — EDD.** Siparişler termin tarihine göre sıralanır. Tek makinede
 en büyük gecikmeyi ($L_{max}$) en aza indiren kural budur (Jackson, 1955). Akış
-tipi hatta da güçlü bir sezgiseldir.
+tipi hatta da güçlü bir heuristic'tir.
 
-**Sipariş içi — hedef kovalama (goal chasing).** Varyantlar bloklar hâlinde değil,
+**Sipariş içi — goal chasing (goal chasing).** Varyantlar bloklar hâlinde değil,
 oranları korunarak karıştırılır. $k$. adımda, ideal birikimli üretimin en çok
 gerisinde kalan varyant seçilir:
 
@@ -365,7 +365,7 @@ hızla tüketir.
 
 ---
 
-## 9. Akış hesabı — ileri özyineleme
+## 9. Akış hesabı — forward recursion
 
 Ürünler sırayla işlenir. Operasyon $j$'nin $c_j$ paralel istasyonu vardır. Ürün
 $i$'nin $j$'ye hazır olma anı, tükettiği bütün girdilerin en geç bitişidir:
@@ -377,7 +377,7 @@ $$
 - $P_p(i)$: parça $p$'nin $i$. adedinin bitişi (§ 6). İkili aramayla $O(\log K)$ sürede bulunur.
 - $V_v(\kappa)$: varyant $v$'nin $\kappa$. bileşeninin bitişi (§ 7). $\kappa_i$, sırada $i$'ye kadar gelen $v$ varyantlı ürün sayısıdır.
 
-**Liste çizelgeleme.** Ürün, en erken **bitirecek** istasyona verilir ($A_s$:
+**List scheduling.** Ürün, en erken **bitirecek** istasyona verilir ($A_s$:
 istasyonun müsait olduğu an):
 
 $$
@@ -396,8 +396,8 @@ Burada $\oplus$, takvim üzerinde ilerletmedir. Takvimler farklıysa (tek istasy
 ek mesai verildiyse) genel kural kullanılır. Karmaşıklık
 $O\big(N \cdot \sum_j c_j \cdot \log |W|\big)$'dir.
 
-**Kısıt analizi.** Her ürün ve istasyon için gecikmeye hangi girdinin yol açtığı
-sayılır. İstasyon boştayken girdi bekleniyorsa bu **aç kalma süresi**, çalışma
+**Constraint analizi.** Her ürün ve istasyon için gecikmeye hangi girdinin yol açtığı
+sayılır. İstasyon boştayken girdi bekleniyorsa bu **starvation süresi**, çalışma
 saniyesi olarak $g(R) - g(A)$ ile ölçülür ve o girdiye yazılır.
 
 > Kod: `motor/akis.py` → `akisi_coz`
@@ -409,10 +409,14 @@ saniyesi olarak $g(R) - g(A)$ ile ölçülür ve o girdiye yazılır.
 Çözüm, aşağıdaki **leksikografik** amaçla karşılaştırılır:
 
 $$
-\text{lex-min}\ \Big(\ \underbrace{\mathbb{1}[\exists\ \text{gecikme}]}_{1)\ \text{termin}},\ \
-\underbrace{\begin{cases}\#\text{ayar} & \text{termine yetişiyorsa}\\ L_{max} & \text{aksi hâlde}\end{cases}}_{2)},\ \
-\underbrace{C_{son}}_{3)\ \text{tamamlanma}}\ \Big).
+\text{lex-min}\ \big(\ G,\ \ Z,\ \ C_{son}\ \big),
+\qquad
+Z = \begin{cases} N_{ayar} & \text{termine yetişiyorsa}\\ L_{max} & \text{aksi hâlde}\end{cases}
 $$
+
+Burada $G \in \{0, 1\}$ en az bir siparişin geciktiğini, $N_{ayar}$ toplam ayar sayısını,
+$L_{max}$ en büyük gecikmeyi, $C_{son}$ tamamlanma anını gösterir. Yani önce termin,
+sonra (termine yetişen planlar arasında) ayar sayısı, sonra tamamlanma süresi karşılaştırılır.
 
 Karar değişkenleri $(K, r)$ küçük bir ızgaradır, örneğin
 $K \in \{1,2,3,4\}$ ve $r \in \{1, 2\}$. Varyant planı $K$'dan bağımsız olduğu
@@ -460,7 +464,7 @@ Burada $B_e$, personelin yıl içinde önceki planlardan biriken fazla çalışm
 **Bölme.** $h_{kg} > H_{gün}$ ise gün $n = \lceil h / H_{gün} \rceil$ eşit vardiyaya
 bölünür ve her vardiyaya ayrı bir personel atanır.
 
-**Açgözlü sezgisel.** Model bir tam sayılı programdır ve gün gün ilerleyen açgözlü
+**Greedy heuristic.** Model bir tam sayılı programdır ve gün gün ilerleyen greedy
 bir yöntemle çözülür. Vardiyalar süresi büyükten küçüğe atanır. Üç sınırı da
 sağlayan adaylar şu sırayla seçilir:
 
@@ -479,7 +483,7 @@ Zorunlu molalar çalışma süresi değildir. Ancak uzun günde ortaya çıktık
 
 ---
 
-## 12. Ek mesai önerisi — darboğaz takibi
+## 12. Ek mesai önerisi — bottleneck walk
 
 Soru: "Bu atölyede $a$ kaynağı günde $E$ saat uzatacaksam hangilerini seçmeliyim?"
 Her grubun günlük kapasitesi şöyledir:
@@ -501,7 +505,7 @@ hatası önlenir. Parça makinelerinde her makine ayrı bir gruptur ($\tau_g = L
 
 ---
 
-## 13. Hat yeterliliği — analitik açık
+## 13. Capacity check — analitik açık
 
 Her grup için yeniden planlama yapmadan **günlük gereken çalışma** hesaplanır:
 
@@ -525,7 +529,7 @@ mesai değil, parti sayısını değiştirmektir.
 
 ## 14. Performans ölçütleri
 
-**Kullanım oranı** çalışma süresiyle ölçülür. Geceler ve molalar "boş" sayılmaz:
+**Utilization** çalışma süresiyle ölçülür. Geceler ve molalar "boş" sayılmaz:
 
 $$
 \rho_k = \frac{\sum_{[a,b) \in \text{meşgul}_k} \big(g_k(b) - g_k(a)\big)}{g_k(C_{son})}.
@@ -545,13 +549,13 @@ vardiya bitişidir.
 
 ---
 
-## 15. Kaynakça
+## 15. Referanslar
 
 - Graham, R. L. (1969). *Bounds on multiprocessing timing anomalies.* SIAM Journal on Applied Mathematics, 17(2), 416–429.
 - Jackson, J. R. (1955). *Scheduling a production line to minimize maximum tardiness.* Research Report 43, UCLA.
 - Balinski, M. L., & Young, H. P. (1982). *Fair Representation: Meeting the Ideal of One Man, One Vote.* Yale University Press. (Hamilton ve D'Hondt yöntemleri)
 - Ibaraki, T., & Katoh, N. (1988). *Resource Allocation Problems: Algorithmic Approaches.* MIT Press.
-- Monden, Y. (1983). *Toyota Production System.* Industrial Engineering and Management Press. (hedef kovalama, heijunka)
+- Monden, Y. (1983). *Toyota Production System.* Industrial Engineering and Management Press. (goal chasing, heijunka)
 - Pinedo, M. L. (2016). *Scheduling: Theory, Algorithms, and Systems* (5. baskı). Springer.
 - Hopp, W. J., & Spearman, M. L. (2011). *Factory Physics* (3. baskı). Waveland Press.
 - Ernst, A. T., Jiang, H., Krishnamoorthy, M., & Sier, D. (2004). *Staff scheduling and rostering: A review of applications, methods and models.* European Journal of Operational Research, 153(1), 3–27.

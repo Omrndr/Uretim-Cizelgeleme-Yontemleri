@@ -13,7 +13,7 @@ Parti büyüklükleri geometrik "rampa" ile dağıtılır:
     q_j ∝ r^j  (j = 0..K−1),   Σ q_j = N,   q_j ≥ 1
 
 r > 1 ilk partiyi küçük tutar (hat çabuk beslenir), sonrakileri büyütür.
-Tam sayıya yuvarlama en büyük kalan (Hamilton) yöntemiyle yapılır; böylece
+Tam sayıya yuvarlama largest remainder (Hamilton) yöntemiyle yapılır; böylece
 toplam korunur ve her parti ideal değerinden en fazla 1 sapar.
 
 YILAN (SERPANTİN) SIRA: Ardışık partilerde parça sırası ters çevrilir

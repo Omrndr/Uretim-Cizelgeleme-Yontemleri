@@ -212,7 +212,7 @@ class Uygulama(tk.Tk):
         ttk.Entry(self.gelismis, textvariable=self.v_rampa, width=12).grid(row=1, column=1)
         ttk.Checkbutton(self.gelismis, text="Ayarı gün başına hizala",
                         variable=self.v_hizala).grid(row=2, column=0, columnspan=2, sticky="w")
-        ttk.Checkbutton(self.gelismis, text="Yılan sıra (parti geçişinde ayar yok)",
+        ttk.Checkbutton(self.gelismis, text="Snake sequencing (parti geçişinde ayar yok)",
                         variable=self.v_serpantin).grid(row=3, column=0, columnspan=2, sticky="w")
         ttk.Checkbutton(self.gelismis, text="Bireysel personel denetimi",
                         variable=self.v_denetim).grid(row=4, column=0, columnspan=2, sticky="w")
@@ -252,7 +252,7 @@ class Uygulama(tk.Tk):
                                 tarih_yaz(self._baslangic() + timedelta(days=11)), "2",
                                 f.takvim.duzen(None).etiket, HAYIR, EVET])
         self.t_mesai.pack(fill="both", expand=True)
-        oneri = ttk.LabelFrame(mesai, text="Darboğaz takibi ile öneri (hesaplanmış plan gerekir)",
+        oneri = ttk.LabelFrame(mesai, text="Bottleneck walk ile öneri (hesaplanmış plan gerekir)",
                                padding=6)
         oneri.pack(fill="x", pady=(6, 0))
         self.v_on_atolye = tk.StringVar(value=f.hat_atolyesi)
@@ -520,7 +520,7 @@ class Uygulama(tk.Tk):
 
     def _kur_genel(self) -> None:
         sayfa = ttk.Frame(self.sekmeler, padding=8)
-        self.sekmeler.add(sayfa, text="Genel bakış")
+        self.sekmeler.add(sayfa, text="Overview")
         self.tuval_genel = SahneTuvali(sayfa)
         self.tuval_genel.pack(fill="both", expand=True)
         self.tuval_genel.goster(None)
@@ -593,7 +593,7 @@ class Uygulama(tk.Tk):
             "Günlük çıkış": an.gunluk_cikis,
             "Günlük personel": an.gunluk_personel,
             "Ayar (değişim) listesi": an.ayar_tablosu,
-            "Kısıt analizi": an.kisit_tablosu,
+            "Constraint analizi": an.kisit_tablosu,
             "Ek mesai özeti": an.ek_mesai_ozeti,
             "Görevlendirmeler": an.gorev_tablosu,
             "Atanamayan vardiyalar": an.atanamayan_tablosu,
@@ -615,7 +615,7 @@ class Uygulama(tk.Tk):
         self.sekmeler.add(sayfa, text="Çıktı")
         ttk.Label(sayfa, text="Çıktı paketi", style="Baslik.TLabel").pack(anchor="w")
         ttk.Label(sayfa, foreground="#57534e", justify="left", text=(
-            "Genel bakış, her hafta ve atölye için haftalık (A3) ve günlük (A4) planlar, "
+            "Overview, her hafta ve atölye için haftalık (A3) ve günlük (A4) planlar, "
             "personel kartları, plan raporu, bütün tablolar (XLSX) ve iş emirleri (CSV).\n"
             "PDF için bilgisayardaki Edge/Chrome kullanılır; bulunamazsa HTML bırakılır.")
         ).pack(anchor="w", pady=(2, 10))
@@ -744,7 +744,7 @@ class Uygulama(tk.Tk):
         t.insert("end", "PANO A · YASAL DURUM\n", "baslik")
         for x in mevzuat_panosu(p):
             t.insert("end", f"  {x}\n", x.durum)
-        t.insert("end", "\nPANO B · HAT YETERLİLİĞİ\n", "baslik")
+        t.insert("end", "\nPANO B · CAPACITY CHECK\n", "baslik")
         gecikenler = geciken_siparisler(p)
         if not gecikenler:
             t.insert("end", f"  {SEMBOL['TAMAM']} Bütün siparişler termine yetişiyor.\n", "TAMAM")
@@ -913,7 +913,7 @@ class Uygulama(tk.Tk):
         messagebox.showinfo("Hakkında", (
             f"Üretim Çizelgeleme {SURUM}\n\n"
             "Endüstri mühendisliği yöntemleriyle üretim çizelgeleme ve personel tahsisi:\n"
-            "min-maks personel tahsisi, P||Cmax dengeleme (LPT + yerel arama), parti/kampanya "
+            "min-maks personel tahsisi, P||Cmax dengeleme (LPT + local search), parti/kampanya "
             "planı, takım kısıtlı varyant planı, EDD + heijunka sıralama, kaynak takvimli akış "
             "hesabı ve yasal sınırlı personel çizelgeleme.\n\n"
             "Örnek fabrika verileri TAMAMEN HAYALİDİR."))

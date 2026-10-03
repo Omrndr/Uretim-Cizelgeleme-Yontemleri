@@ -9,7 +9,7 @@ Problem NP-zordur (2 makinede bile PARTITION'a indirgenir). Kullanılan yöntem:
 
   1) LPT (Longest Processing Time): parçalar süreye göre azalan sırada, o an en
      az yüklü makineye atanır. Garanti: C_LPT ≤ (4/3 − 1/(3m)) · C*  (Graham, 1969)
-  2) Yerel arama: en yüklü makineden bir parçayı TAŞIMA ya da bir parçayı başka
+  2) Local search: en yüklü makineden bir parçayı TAŞIMA ya da bir parçayı başka
      makinedeki parçayla TAKAS etme; en çok iyileştiren hamle uygulanır (en dik
      iniş). Hamle kabul ölçütü, iki makinenin yeni yüklerinin büyüğünün mevcut
      C'den kesin küçük olmasıdır; bu, Σ L_k² değerini kesin azalttığından arama
@@ -31,7 +31,7 @@ class Dengeleme:
     gruplar: List[List[str]]      # makine -> parça kodları (işlem sırası)
     yukler: List[float]           # makine -> ürün başına yük (sn)
     alt_sinir: float
-    lpt_cmax: float               # yerel aramadan ÖNCEKİ değer (rapor için)
+    lpt_cmax: float               # local search'ten ÖNCEKİ değer (rapor için)
 
     @property
     def cmax(self) -> float:
@@ -87,7 +87,7 @@ def _en_iyi_hamle(gruplar: List[List[str]], yukler: List[float],
 
 
 def dengele(sureler: Dict[str, float], m: int, azami_adim: int = 10_000) -> Dengeleme:
-    """Parçaları m makineye dağıtır (LPT + en dik iniş yerel arama)."""
+    """Parçaları m makineye dağıtır (LPT + steepest descent local search)."""
     if m <= 0:
         raise ValueError("Makine sayısı pozitif olmalı.")
     gruplar, yukler = _lpt(sureler, m)

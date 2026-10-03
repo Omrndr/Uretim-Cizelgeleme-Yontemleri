@@ -1,5 +1,5 @@
 """
-Akış hesabı — hücreler ve hat için kaynak takvimli ileri özyineleme.
+Akış hesabı — hücreler ve hat için kaynak takvimli forward recursion.
 
 Ürünler üretim sırasına göre (i = 1..N) işlenir. Operasyon j'nin c_j paralel
 istasyonu vardır. i. ürünün j'ye hazır olma anı, tükettiği bütün girdilerin
@@ -11,7 +11,7 @@ en geç bitişidir:
     P_p(i)   : parça p'nin i. adedinin bitişi (parti planından)
     V_v(k)   : varyant v'nin k. bileşeninin bitişi; k_i = i. üründen önceki v'li ürün sayısı + 1
 
-Liste çizelgeleme: ürün, en erken BİTİRECEK istasyona verilir
+List scheduling: ürün, en erken BİTİRECEK istasyona verilir
 
     s* = argmin_s  ilerle_s( max(R_j(i), A_s), τ_j ),    A_s: istasyonun müsait anı
     S_j(i) = max(R_j(i), A_{s*}) (takvime göre ilk müsait an),  F_j(i) = ilerlet(S_j(i), τ_j)
@@ -22,7 +22,7 @@ Bütün istasyonların takvimi özdeşse bu, bilinen kapalı biçime indirgenir:
 genel kural kullanılır.
 
 KISIT ANALİZİ: Her ürün-istasyon için gecikmeye hangi girdinin yol açtığı
-sayılır; istasyon boştayken girdi bekleniyorsa bu "aç kalma" süresi
+sayılır; istasyon boştayken girdi bekleniyorsa bu "starvation" süresi
 (çalışma saniyesi olarak) o girdiye yazılır.
 """
 from __future__ import annotations
